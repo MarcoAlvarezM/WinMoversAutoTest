@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12224.181 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinMoversAutoTest", "WinMoversAutoTest.csproj", "{CEABE3E1-11D6-3ADF-6E5E-329477B7FA2A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CEABE3E1-11D6-3ADF-6E5E-329477B7FA2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEABE3E1-11D6-3ADF-6E5E-329477B7FA2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEABE3E1-11D6-3ADF-6E5E-329477B7FA2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEABE3E1-11D6-3ADF-6E5E-329477B7FA2A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DEC1C28B-5EC1-43EF-B4FC-E1B6D5B4AA0E}
+	EndGlobalSection
+EndGlobal

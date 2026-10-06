@@ -1,0 +1,9 @@
+﻿.vs/
+bin/
+obj/
+*.user
+*.suo
+
+# Configuraci�n local de cada desarrollador (cadena de conexi�n a su propio
+# SQL). El servidor com�n queda en appsettings.json.
+appsettings.Development.json
