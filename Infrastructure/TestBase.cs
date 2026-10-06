@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 
-namespace WinMovers.Tests.Infrastructure;
+namespace WinMoversAutoTest.Infrastructure;
 
 public abstract class TestBase
 {

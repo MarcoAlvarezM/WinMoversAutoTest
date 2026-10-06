@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace WinMovers.Tests.Pages;
+namespace WinMoversAutoTest.Pages;
 
 public class LoginPage
 {

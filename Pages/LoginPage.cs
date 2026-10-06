@@ -1,9 +1,9 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
-using WinMovers.Tests.Infrastructure;
-using WinMovers.Tests.Pages;
+using WinMoversAutoTest.Infrastructure;
+using WinMoversAutoTest.Pages;
 
-namespace WinMovers.Tests.Tests;
+namespace WinMoversAutoTest.Tests;
 
 public class AuthenticationTests : TestBase
 {
