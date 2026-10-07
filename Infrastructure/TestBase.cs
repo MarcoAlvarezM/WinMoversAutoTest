@@ -11,7 +11,7 @@ public abstract class TestBase
     protected IBrowserContext Context = null!;
     protected IPage Page = null!;
 
-    protected const string BaseUrl = "https://localhost:7058";
+    protected const string BaseUrl = "http://3.15.121.133/";
 
     [SetUp]
     public async Task SetUp()

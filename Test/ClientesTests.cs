@@ -38,11 +38,11 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "admin@winmovers.com",
-            "Admin123!");
+            "marcoalvmejia@gmail.com",
+            "Marco1003");
 
         await Page.WaitForURLAsync(
-            "**https://localhost:7058/");
+            "**http://3.15.121.133/");
 
         // =====================================================
         // 2. Ir a Clientes
@@ -157,11 +157,11 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "admin@winmovers.com",
-            "Admin123!");
+            "marcoalvmejia@gmail.com",
+            "Marco1003");
 
         await Page.WaitForURLAsync(
-            "**https://localhost:7058/");
+            "**http://3.15.121.133/");
 
         // =====================================================
         // 2. Ir a Clientes
@@ -299,11 +299,11 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "admin@winmovers.com",
-            "Admin123!");
+            "marcoalvmejia@gmail.com",
+            "Marco1003");
 
         await Page.WaitForURLAsync(
-            "**https://localhost:7058/");
+            "**http://3.15.121.133/");
 
         // =====================================================
         // 2. Ir a Clientes
@@ -373,11 +373,11 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "admin@winmovers.com",
-            "Admin123!");
+            "marcoalvmejia@gmail.com",
+            "Marco1003");
 
         await Page.WaitForURLAsync(
-            "**https://localhost:7058/");
+            "**http://3.15.121.133/");
 
         // =====================================================
         // 2. Ir al módulo de Clientes

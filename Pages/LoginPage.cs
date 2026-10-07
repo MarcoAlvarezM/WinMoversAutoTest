@@ -19,14 +19,14 @@ public class AuthenticationTests : TestBase
             .WaitForAsync();
 
         await loginPage.LoginAsync(
-            "admin@winmovers.com",
-            "Admin123!");
+            "marcoalvmejia@gmail.com",
+            "Marco1003");
 
         await Page.WaitForURLAsync(
-            "**https://localhost:7058/");
+            "**http://3.15.121.133/");
 
         Assert.That(
             Page.Url,
-            Does.Contain("https://localhost:7058/"));
+            Does.Contain("http://3.15.121.133/"));
     }
 }

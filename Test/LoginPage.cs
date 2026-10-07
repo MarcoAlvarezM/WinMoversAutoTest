@@ -13,7 +13,7 @@ public class LoginPage
 
     public async Task NavigateAsync()
     {
-        await _page.GotoAsync("/");
+        await _page.GotoAsync("http://3.15.121.133/");
     }
 
     public async Task LoginAsync(string email, string password)
