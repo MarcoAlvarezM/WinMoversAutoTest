@@ -94,29 +94,25 @@ public class AuthenticationTests : TestBase
             Page.Locator("h2.content-title")
         ).ToContainTextAsync("Asignar rol");
 
-        // Verificar que estamos modificando el usuario correcto
-        await Assertions.Expect(
-            Page.GetByText(nombreUsuario, new()
-            {
-                Exact = true
-            })
+		// Verificar que estamos modificando el usuario correcto
+		await Assertions.Expect(
+	        Page.Locator("strong")
+		        .Filter(new() { HasText = "Marco Álvarez Mejía" })
         ).ToBeVisibleAsync();
 
-        // Verificar que estamos modificando el usuario correcto.
-        // La página de asignación muestra el nombre, no el correo.
-        await Assertions.Expect(
-            Page.GetByText(nombreUsuario, new()
-            {
-                Exact = true
-            })
+		// Verificar que estamos modificando el usuario correcto.
+		// La página de asignación muestra el nombre, no el correo.
+		await Assertions.Expect(
+	        Page.Locator("strong")
+		        .Filter(new() { HasText = "Marco Álvarez Mejía" })
         ).ToBeVisibleAsync();
 
 
-        // =====================================================
-        // 5. Seleccionar el nuevo rol y guardar
-        // =====================================================
+		// =====================================================
+		// 5. Seleccionar el nuevo rol y guardar
+		// =====================================================
 
-        await rolesPage.AsignarRolAsync(nombreRol);
+		await rolesPage.AsignarRolAsync(nombreRol);
 
         // El controlador redirige a /Usuario
         await Page.WaitForURLAsync("**/Usuario");

@@ -3,7 +3,7 @@ using NUnit.Framework;
 using WinMoversAutoTest.Infrastructure;
 using WinMoversAutoTest.Pages;
 
-namespace WinMovers.Tests.Tests;
+namespace WinMoversAutoTest.Tests;
 
 public class ClientesTests : TestBase
 {
