@@ -1,6 +1,8 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
+using WinMoversAutoTest.Pages;
+using Simulacion3_Calidad_Software.Utils;
 
 namespace WinMoversAutoTest.Infrastructure;
 
@@ -12,6 +14,7 @@ public abstract class TestBase
     protected IPage Page = null!;
 
     protected const string BaseUrl = "http://3.15.121.133/";
+    //protected const string BaseUrl = "http://localhost:5000/";
 
     [SetUp]
     public async Task SetUp()
@@ -30,6 +33,19 @@ public abstract class TestBase
         });
 
         Page = await Context.NewPageAsync();
+    }
+
+    // Inicio de sesión compartido por los tests de Órdenes y Cotizaciones.
+    // Va a la raíz del sitio usando la BaseUrl de este mismo archivo, así que
+    // no depende de la IP que tenga LoginPage.
+    protected async Task IniciarSesionAsync()
+    {
+        await Page.GotoAsync("/");
+
+        var loginPage = new LoginPage(Page);
+        await loginPage.LoginAsync(TestConfig.Email, TestConfig.Password);
+
+        await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
     }
 
     [TearDown]
