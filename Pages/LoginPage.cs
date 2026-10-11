@@ -1,32 +1,31 @@
 ﻿using Microsoft.Playwright;
-using NUnit.Framework;
-using WinMoversAutoTest.Infrastructure;
-using WinMoversAutoTest.Pages;
 
-namespace WinMoversAutoTest.Tests;
+namespace WinMoversAutoTest.Pages;
 
-public class AuthenticationTests : TestBase
+public class LoginPage
 {
-    [Test]
-    [Category("Authentication")]
-    public async Task TC_AUT_001_InicioDeSesionDeUsuario()
+    private readonly IPage _page;
+
+    public LoginPage(IPage page)
     {
-        var loginPage = new LoginPage(Page);
+        _page = page;
+    }
 
-        await loginPage.NavigateAsync();
+    public async Task NavigateAsync()
+    {
+        await _page.GotoAsync("/");
+    }
 
-        await Page.GetByLabel("Correo")
-            .WaitForAsync();
+    public async Task LoginAsync(string email, string password)
+    {
+        await _page.GetByLabel("Correo").FillAsync(email);
+        await _page.GetByLabel("Contraseña").FillAsync(password);
 
-        await loginPage.LoginAsync(
-            "marcoalvmejia@gmail.com",
-            "Marco1003");
-
-        await Page.WaitForURLAsync(
-            "**http://3.15.121.133/");
-
-        Assert.That(
-            Page.Url,
-            Does.Contain("http://3.15.121.133/"));
+        await _page
+            .GetByRole(AriaRole.Button, new()
+            {
+                Name = "Iniciar sesión"
+            })
+            .ClickAsync();
     }
 }

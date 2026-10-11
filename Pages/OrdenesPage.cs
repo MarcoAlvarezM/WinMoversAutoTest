@@ -327,5 +327,40 @@ public class OrdenesPage
 
         return (await mensaje.InnerTextAsync()).Trim();
     }
+    public async Task AbrirAsignacionMaterialesAsync(string numeroOT)
+    {
+        var fila = FilaDeOrden(numeroOT);
+        await Assertions.Expect(fila).ToBeVisibleAsync();
 
+        await fila.Locator("a[title='Asignar Materiales']").ClickAsync();
+        await _page.WaitForURLAsync("**/OrdenTrabajo/Materiales/**");
+    }
+
+    // Crea una orden por la interfaz y vuelve al listado. Sirve de precondición para
+    // los tests que necesitan una O.T. existente (Importaciones, Exportaciones...).
+    public async Task<string> CrearOrdenRapidaAsync()
+    {
+        string numeroOT = $"QA-{DateTime.Now:yyyyMMddHHmmssfff}";
+
+        await IrAOrdenesAsync();
+        await IrANuevaOrdenAsync();
+        await _page.WaitForURLAsync("**/OrdenTrabajo/Create");
+
+        await CrearOrdenAsync(
+            numeroOT,
+            DateTime.Today.AddDays(400 + Random.Shared.Next(0, 3000)),
+            "08:00",
+            $"Cliente QA {numeroOT}",
+            "88887777",
+            "San José, Costa Rica",
+            "Cartago, Costa Rica",
+            "Orden de precondición creada por prueba E2E.",
+            "Cliente QA",
+            "QA Automation");
+
+        await _page.WaitForURLAsync("**/OrdenTrabajo");
+        await VerificarMensajeCreacionAsync();
+
+        return numeroOT;
+    }
 }

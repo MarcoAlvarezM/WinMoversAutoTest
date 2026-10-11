@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
+using Simulacion3_Calidad_Software.Utils;
 using WinMoversAutoTest.Infrastructure;
 using WinMoversAutoTest.Pages;
 
@@ -15,8 +16,7 @@ public class AuthenticationTests : TestBase
         var rolesPage = new RolesPage(Page);
         var usuariosPage = new UsuariosPage(Page);
 
-        const string correoUsuario = "marcoalvmejia@gmail.com";
-        const string nombreUsuario = "Marco Álvarez Mejía";
+        string correoUsuario = TestConfig.Email;
 
         string nombreRol =
             $"QA_Automated_Role_{DateTime.Now:yyyyMMddHHmmss}";
@@ -31,10 +31,10 @@ public class AuthenticationTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "marcoalvmejia@gmail.com",
-            "Marco1003");
+            TestConfig.Email,
+            TestConfig.Password);
 
-        await Page.WaitForURLAsync("**http://3.15.121.133/");
+        await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
         // =====================================================
         // 2. Entrar al módulo de roles y crear nuevo rol
@@ -143,8 +143,8 @@ public class AuthenticationTests : TestBase
         var loginPage = new LoginPage(Page);
         var passwordRecoveryPage = new PasswordRecoveryPage(Page);
 
-        const string correo =
-            "marcoalvmejia@gmail.com";
+        string correo = 
+            TestConfig.Email;
 
         // =====================================================
         // 1. Ir a la pantalla de inicio de sesión

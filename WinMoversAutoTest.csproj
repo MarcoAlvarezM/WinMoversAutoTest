@@ -23,4 +23,14 @@
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="145.0.7632.11700" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestData\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="TestData\Documento_Prueba_QA.pdf">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

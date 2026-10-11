@@ -1,8 +1,10 @@
 ﻿
 using Microsoft.Playwright;
 using NUnit.Framework;
-using WinMoversAutoTest.Pages;
+using Simulacion3_Calidad_Software.Utils;
 using WinMoversAutoTest.Infrastructure;
+using WinMoversAutoTest.Pages;
+
 
 namespace WinMoversAutoTest.Tests
 {
@@ -19,11 +21,11 @@ namespace WinMoversAutoTest.Tests
             await loginPage.NavigateAsync();
 
             await loginPage.LoginAsync(
-                "marcoalvmejia@gmail.com",
-                "Marco1003"
+                TestConfig.Email,
+                TestConfig.Password
             );
 
-            await Page.WaitForURLAsync("**http://3.15.121.133/");
+            await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
             var inventarioPage = new InventarioPage(Page);
             var ordenTrabajoPage = new OrdenesPage(Page);
@@ -64,8 +66,25 @@ namespace WinMoversAutoTest.Tests
                 "Las existencias iniciales no coinciden con las esperadas."
             );
 
-            // 4. Abrir una orden de trabajo existente
-            await ordenTrabajoPage.AbrirPrimeraOrdenDisponibleAsync();
+            // 4. Crear una orden propia (precondición) y abrir su asignación de materiales
+            string numeroOT = $"QA-{DateTime.Now:yyyyMMddHHmmssfff}";
+
+            await ordenTrabajoPage.IrAOrdenesAsync();
+            await ordenTrabajoPage.IrANuevaOrdenAsync();
+            await ordenTrabajoPage.CrearOrdenAsync(
+                numeroOT,
+                DateTime.Today.AddDays(400 + Random.Shared.Next(0, 3000)),
+                "08:00",
+                $"Cliente QA {numeroOT}",
+                "88887777",
+                "San José, Costa Rica",
+                "Cartago, Costa Rica",
+                "Orden para prueba de inventario.",
+                "Cliente QA",
+                "QA Automation");
+
+            await Page.WaitForURLAsync("**/OrdenTrabajo");
+            await ordenTrabajoPage.AbrirAsignacionMaterialesAsync(numeroOT);
 
             // 5. Asignar 5 unidades del material a la orden
             const int cantidadAsignada = 5;
@@ -127,11 +146,11 @@ namespace WinMoversAutoTest.Tests
             await loginPage.NavigateAsync();
 
             await loginPage.LoginAsync(
-                "marcoalvmejia@gmail.com",
-                "Marco1003"
+                TestConfig.Email,
+                TestConfig.Password
             );
 
-            await Page.WaitForURLAsync("**http://3.15.121.133/");
+            await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
             // 2. Ingresar al inventario
             var inventarioPage = new InventarioPage(Page);
@@ -183,11 +202,11 @@ namespace WinMoversAutoTest.Tests
             await loginPage.NavigateAsync();
 
             await loginPage.LoginAsync(
-                "marcoalvmejia@gmail.com",
-                "Marco1003"
+                TestConfig.Email,
+                TestConfig.Password
             );
 
-            await Page.WaitForURLAsync("**http://3.15.121.133/");
+            await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
             // 2. Ingresar al inventario
             var inventarioPage = new InventarioPage(Page);
@@ -270,11 +289,11 @@ namespace WinMoversAutoTest.Tests
             await loginPage.NavigateAsync();
 
             await loginPage.LoginAsync(
-                "marcoalvmejia@gmail.com",
-                "Marco1003"
+                TestConfig.Email,
+                TestConfig.Password
             );
 
-            await Page.WaitForURLAsync("**http://3.15.121.133/");
+            await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
             var inventarioPage = new InventarioPage(Page);
 

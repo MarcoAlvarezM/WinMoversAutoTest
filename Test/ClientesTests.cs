@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 using NUnit.Framework;
+using Simulacion3_Calidad_Software.Utils;
 using WinMoversAutoTest.Infrastructure;
 using WinMoversAutoTest.Pages;
 
@@ -38,11 +39,10 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "marcoalvmejia@gmail.com",
-            "Marco1003");
+            TestConfig.Email,
+            TestConfig.Password);
 
-        await Page.WaitForURLAsync(
-            "**http://3.15.121.133/");
+        await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
         // =====================================================
         // 2. Ir a Clientes
@@ -157,11 +157,10 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "marcoalvmejia@gmail.com",
-            "Marco1003");
+            TestConfig.Email,
+            TestConfig.Password);
 
-        await Page.WaitForURLAsync(
-            "**http://3.15.121.133/");
+        await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
         // =====================================================
         // 2. Ir a Clientes
@@ -299,11 +298,10 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "marcoalvmejia@gmail.com",
-            "Marco1003");
+            TestConfig.Email,
+            TestConfig.Password);
 
-        await Page.WaitForURLAsync(
-            "**http://3.15.121.133/");
+        await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
         // =====================================================
         // 2. Ir a Clientes
@@ -373,11 +371,10 @@ public class ClientesTests : TestBase
         await loginPage.NavigateAsync();
 
         await loginPage.LoginAsync(
-            "marcoalvmejia@gmail.com",
-            "Marco1003");
+            TestConfig.Email,
+            TestConfig.Password);
 
-        await Page.WaitForURLAsync(
-            "**http://3.15.121.133/");
+        await Page.WaitForURLAsync(url => new Uri(url).AbsolutePath == "/");
 
         // =====================================================
         // 2. Ir al módulo de Clientes
