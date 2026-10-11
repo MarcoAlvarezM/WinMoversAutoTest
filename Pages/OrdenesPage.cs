@@ -1,5 +1,6 @@
-using System.Text.RegularExpressions;
 using Microsoft.Playwright;
+using NUnit.Framework;
+using System.Text.RegularExpressions;
 
 namespace WinMoversAutoTest.Pages;
 
@@ -234,4 +235,97 @@ public class OrdenesPage
             .Locator("table.data-table tbody tr")
             .Filter(new LocatorFilterOptions { HasText = numeroOT });
     }
+
+    public async Task AbrirPrimeraOrdenDisponibleAsync()
+    {
+        await _page.GotoAsync("/OrdenTrabajo");
+
+        var enlacesAsignacion =
+            _page.Locator("a[title='Asignar Materiales']");
+
+        int cantidadOrdenes = await enlacesAsignacion.CountAsync();
+
+        if (cantidadOrdenes == 0)
+        {
+            throw new AssertionException(
+                "No hay órdenes de trabajo registradas. " +
+                "TC-INV-001 requiere una orden válida."
+            );
+        }
+
+        await enlacesAsignacion.First.ClickAsync();
+
+        await _page.WaitForURLAsync("**/OrdenTrabajo/Materiales/**");
+    }
+
+    public async Task AsignarMaterialAsync(
+        string nombreMaterial,
+        int cantidad)
+    {
+        var selectorMaterial =
+            _page.Locator("select[name='idMaterial']");
+
+        // El nombre aparece junto con las existencias y la unidad.
+        var opcionMaterial = selectorMaterial
+            .Locator("option")
+            .Filter(new() { HasText = nombreMaterial });
+
+        string? idMaterial =
+            await opcionMaterial.First.GetAttributeAsync("value");
+
+        if (string.IsNullOrWhiteSpace(idMaterial))
+        {
+            throw new AssertionException(
+                $"No se encontró el material '{nombreMaterial}' " +
+                "en las opciones de asignación."
+            );
+        }
+
+        await selectorMaterial.SelectOptionAsync(idMaterial);
+
+        await _page.Locator("input[name='cantidad']")
+            .FillAsync(cantidad.ToString());
+
+        await _page.GetByRole(
+            AriaRole.Button,
+            new() { Name = "Asignar" }
+        ).ClickAsync();
+
+        await _page.WaitForURLAsync("**/OrdenTrabajo/Materiales/**");
+    }
+
+    public async Task<bool> AsignacionVisibleAsync(
+        string nombreMaterial,
+        int cantidad)
+    {
+        var filas = _page.Locator("table.data-table tbody tr");
+
+        int total = await filas.CountAsync();
+
+        for (int i = 0; i < total; i++)
+        {
+            var fila = filas.Nth(i);
+            string texto = await fila.InnerTextAsync();
+
+            if (texto.Contains(nombreMaterial) &&
+                texto.Contains(cantidad.ToString()))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public async Task<string> ObtenerMensajeExitoAsync()
+    {
+        var mensaje = _page.Locator("#toastMsg");
+
+        await mensaje.WaitForAsync(
+            new() { State = WaitForSelectorState.Visible }
+        );
+
+        return (await mensaje.InnerTextAsync()).Trim();
+    }
+
 }
