@@ -12,19 +12,13 @@ namespace WinMoversAutoTest.Tests
     public class TC_DAS_002_ConsultarDatosHistoricos : TestBase
     {
         [Test]
+        [Category("Dashboard")]
         public async Task TC_DAS_002_ConsultarHistorico_PorPeriodo()
         {
             // 1. Iniciar sesión
-            var loginPage = new LoginPage(Page);
+            await IniciarSesionAsync();
 
-            await loginPage.NavigateAsync();
-
-            await loginPage.LoginAsync(
-                TestConfig.Email,
-                TestConfig.Password
-            );
-
-            await Page.WaitForURLAsync("**https://localhost:7058/");
+            await new OrdenesPage(Page).CrearOrdenRapidaAsync();
 
             // 2. Abrir el histórico desde el menú
             var historicoPage = new HistoricoDashboardPage(Page);
@@ -88,6 +82,10 @@ namespace WinMoversAutoTest.Tests
                 Is.GreaterThan(0),
                 "El gráfico histórico no contiene meses para representar."
             );
+
+            // 7. Un periodo sin órdenes muestra el mensaje de "sin datos"
+            await historicoPage.ConsultarPeriodoAsync("2000-01-01", "2000-12-31");
+            await Expect(historicoPage.ObtenerMensajeSinDatos()).ToBeVisibleAsync();
         }
     }
 }

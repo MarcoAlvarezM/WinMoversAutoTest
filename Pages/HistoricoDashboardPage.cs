@@ -14,10 +14,13 @@ namespace WinMoversAutoTest.Pages
 
         public async Task AbrirHistoricoAsync()
         {
-            await _page.GetByRole(
-                AriaRole.Link,
-                new() { Name = "Histórico", Exact = false }
-            ).ClickAsync();
+            var enlace = _page.Locator("a[href='/Dashboards/Historico']").First;
+
+            await enlace.WaitForAsync(
+                new() { State = WaitForSelectorState.Visible }
+            );
+
+            await enlace.ClickAsync();
 
             await _page.WaitForURLAsync("**/Dashboards/Historico");
         }

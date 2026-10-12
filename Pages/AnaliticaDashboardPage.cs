@@ -14,14 +14,13 @@ namespace WinMoversAutoTest.Pages
 
         public async Task AbrirAnaliticaAsync()
         {
-            var analitica = _page.GetByText(
-                "Analítica",
-                new() { Exact = true }
+            var enlace = _page.Locator("a[href='/Dashboards/Analitica']").First;
+
+            await enlace.WaitForAsync(
+                new() { State = WaitForSelectorState.Visible }
             );
 
-            await Assertions.Expect(analitica.First).ToBeVisibleAsync();
-
-            await analitica.First.ClickAsync();
+            await enlace.ClickAsync();
 
             await _page.WaitForURLAsync(
                 "**/Dashboards/Analitica"

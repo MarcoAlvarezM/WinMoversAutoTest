@@ -12,19 +12,15 @@ namespace WinMoversAutoTest.Tests
     public class TC_DAS_001_VisualizarDashboard : TestBase
     {
         [Test]
+        [Category("Dashboard")]
         public async Task TC_DAS_001_DashboardImportacionesExportaciones_Visible()
         {
             // 1. Iniciar sesión
             var loginPage = new LoginPage(Page);
 
-            await loginPage.NavigateAsync();
+            await IniciarSesionAsync();
 
-            await loginPage.LoginAsync(
-                TestConfig.Email,
-                TestConfig.Password
-            );
-
-            await Page.WaitForURLAsync("**https://localhost:7058/");
+            await CrearDatosParaDashboardsAsync();
 
             // 2. Abrir la analítica desde el menú
             var dashboardPage = new AnaliticaDashboardPage(Page);

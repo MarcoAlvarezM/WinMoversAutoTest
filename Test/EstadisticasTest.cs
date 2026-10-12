@@ -12,19 +12,13 @@ namespace WinMoversAutoTest.Tests
     public class TC_DAS_004_VisualizarEstadisticas : TestBase
     {
         [Test]
+        [Category("Dashboard")]
         public async Task TC_DAS_004_Estadisticas_CantidadesYPorcentajes()
         {
             // 1. Iniciar sesión
-            var loginPage = new LoginPage(Page);
+            await IniciarSesionAsync();
 
-            await loginPage.NavigateAsync();
-
-            await loginPage.LoginAsync(
-                TestConfig.Email,
-                TestConfig.Password
-            );
-
-            await Page.WaitForURLAsync("**https://localhost:7058/");
+            await CrearDatosParaDashboardsAsync();
 
             // 2. Abrir el módulo de estadísticas
             var estadisticasPage =
@@ -118,19 +112,16 @@ namespace WinMoversAutoTest.Tests
             );
 
             // 8. Comparar el gráfico con las cantidades de las tarjetas
-            int cajasImportacion = await Page
-                .Locator("section.dashboard-stats .stat-card")
-                .Nth(0)
-                .Locator(".stat-info h3")
-                .InnerTextAsync()
-                .ContinueWith(t => int.Parse(t.Result.Trim()));
+            static int SoloEntero(string texto) =>
+                int.Parse(System.Text.RegularExpressions.Regex.Replace(texto, @"\D", ""));
 
-            int cajasExportacion = await Page
-                .Locator("section.dashboard-stats .stat-card")
-                .Nth(1)
-                .Locator(".stat-info h3")
-                .InnerTextAsync()
-                .ContinueWith(t => int.Parse(t.Result.Trim()));
+            var tarjetasStats = Page.Locator("section.dashboard-stats .stat-card");
+
+            int cajasImportacion = SoloEntero(
+                await tarjetasStats.Nth(0).Locator(".stat-info h3").InnerTextAsync());
+
+            int cajasExportacion = SoloEntero(
+                await tarjetasStats.Nth(1).Locator(".stat-info h3").InnerTextAsync());
 
             Assert.That(
                 valoresGrafico[0],
@@ -143,6 +134,43 @@ namespace WinMoversAutoTest.Tests
                 Is.EqualTo(cajasExportacion),
                 "El gráfico no coincide con las cajas exportadas."
             );
+
+            // 9. Verificar los porcentajes de las tarjetas de cajas
+            static double Porcentaje(string textoTarjeta)
+            {
+                var m = System.Text.RegularExpressions.Regex.Match(
+                    textoTarjeta, @"\((\d+(?:[.,]\d+)?)\s*%\)");
+
+                Assert.That(m.Success, Is.True,
+                    $"No se encontró un porcentaje en la tarjeta: '{textoTarjeta}'.");
+
+                return double.Parse(
+                    m.Groups[1].Value.Replace(',', '.'),
+                    System.Globalization.CultureInfo.InvariantCulture);
+            }
+
+            int totalCajas = cajasImportacion + cajasExportacion;
+
+            Assert.That(totalCajas, Is.GreaterThan(0),
+                "No hay cajas para calcular porcentajes.");
+
+            double pctImportadas = Porcentaje(cajasImportadas);
+            double pctExportadas = Porcentaje(cajasExportadas);
+
+            Assert.That(
+                pctImportadas + pctExportadas,
+                Is.EqualTo(100).Within(0.2),
+                "Los porcentajes de cajas no suman 100%.");
+
+            Assert.That(
+                pctImportadas,
+                Is.EqualTo(cajasImportacion * 100.0 / totalCajas).Within(0.1),
+                "El % de cajas importadas no corresponde a sus cantidades.");
+
+            Assert.That(
+                pctExportadas,
+                Is.EqualTo(cajasExportacion * 100.0 / totalCajas).Within(0.1),
+                "El % de cajas exportadas no corresponde a sus cantidades.");
         }
     }
 }

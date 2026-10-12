@@ -82,4 +82,31 @@ public abstract class TestBase
         await Browser.CloseAsync();
         Playwright.Dispose();
     }
+
+    // Crea una O.T. con una importación y una exportación para que los dashboards
+    // tengan datos que mostrar, sin depender del estado de la base.
+    protected async Task CrearDatosParaDashboardsAsync()
+    {
+        var ordenes = new OrdenesPage(Page);
+        var importaciones = EmbarquesPage.Importaciones(Page);
+        var exportaciones = EmbarquesPage.Exportaciones(Page);
+
+        string numeroOT = await ordenes.CrearOrdenRapidaAsync();
+
+        await importaciones.IrAListadoAsync();
+        await importaciones.IrANuevoEmbarqueAsync();
+        await importaciones.CrearEmbarqueAsync(
+            $"QA Dashboard {DateTime.Now:HHmmssfff}", numeroOT,
+            cajas: 10, kilos: 100m, fecha: DateTime.Today,
+            observaciones: "Datos para pruebas de dashboard.", pais: "Panamá");
+        await importaciones.VerificarMensajeCreacionAsync();
+
+        await exportaciones.IrAListadoAsync();
+        await exportaciones.IrANuevoEmbarqueAsync();
+        await exportaciones.CrearEmbarqueAsync(
+            $"QA Dashboard {DateTime.Now:HHmmssfff}", numeroOT,
+            cajas: 10, kilos: 100m, fecha: DateTime.Today,
+            observaciones: "Datos para pruebas de dashboard.");
+        await exportaciones.VerificarMensajeCreacionAsync();
+    }
 }
