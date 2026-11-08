@@ -28,4 +28,18 @@ public class LoginPage
             })
             .ClickAsync();
     }
+
+    public async Task IniciarSesionIncorrectoAsync(
+        string correo,
+        string contrasenaIncorrecta)
+    {
+        await _page.GetByLabel("Correo").FillAsync(correo);
+
+        await _page.GetByLabel("Contraseña").FillAsync(contrasenaIncorrecta);
+
+        await _page.GetByRole(
+            AriaRole.Button,
+            new() { Name = "Iniciar sesión" }
+        ).ClickAsync();
+    }
 }

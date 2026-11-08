@@ -365,5 +365,131 @@ namespace WinMoversAutoTest.Tests
             );
         }
 
+
+        [Test]
+        public async Task TC_NEG_005_RegistrarMaterial_CamposObligatoriosVacios()
+        {
+            // Arrange: iniciar sesión
+            var loginPage = new LoginPage(Page);
+
+            await loginPage.NavigateAsync();
+
+            await loginPage.LoginAsync(
+                TestConfig.Email,
+                TestConfig.Password
+            );
+
+            await Page.WaitForURLAsync(
+                url => new Uri(url).AbsolutePath == "/"
+            );
+
+            var inventarioPage = new InventarioPage(Page);
+
+            // Ingresar al inventario
+            await inventarioPage.IrAlInventarioAsync();
+
+            await inventarioPage.AbrirNuevoMaterialAsync();
+
+            // Act: intentar registrar un material sin información
+            await inventarioPage.IntentarRegistrarMaterialVacioAsync();
+
+            // Assert: el sistema debe permanecer en el formulario
+            Assert.That(
+                new Uri(Page.Url).AbsolutePath,
+                Is.EqualTo("/Inventario/Create"),
+                "El sistema permitió registrar un material sin completar los campos obligatorios."
+            );
+
+            // Verificar que los campos continúan visibles
+            await Assertions.Expect(
+                Page.Locator("#NombreMaterial")
+            ).ToBeVisibleAsync();
+
+            await Assertions.Expect(
+                Page.Locator("#Categoria")
+            ).ToBeVisibleAsync();
+
+            await Assertions.Expect(
+                Page.Locator("#Descripcion")
+            ).ToBeVisibleAsync();
+
+            await Assertions.Expect(
+                Page.Locator("#Unidad")
+            ).ToBeVisibleAsync();
+
+            // Verificar que existan errores de validación
+            await Assertions.Expect(
+                Page.Locator(".field-validation-error, .validation-summary-errors")
+            ).ToBeVisibleAsync();
+        }
+
+        [Test]
+        public async Task TC_NEG_007_EditarMaterial_DatosInvalidos()
+        {
+
+            // Arrange: iniciar sesión
+            var loginPage = new LoginPage(Page);
+
+            await loginPage.NavigateAsync();
+
+            await loginPage.LoginAsync(
+                TestConfig.Email,
+                TestConfig.Password
+            );
+
+            await Page.WaitForURLAsync(
+                url => new Uri(url).AbsolutePath == "/"
+            );
+
+            var inventarioPage = new InventarioPage(Page);
+
+            // Arrange
+            string nombreMaterial =
+                $"Material NEG 007 {DateTime.Now:yyyyMMddHHmmss}";
+
+            await inventarioPage.IrAlInventarioAsync();
+            await inventarioPage.AbrirNuevoMaterialAsync();
+
+            await inventarioPage.RegistrarMaterialAsync(
+                nombreMaterial,
+                "Embalaje",
+                "Material para prueba negativa",
+                "Unidad",
+                10,
+                2
+            );
+
+            // Abrir edición del material recién creado.
+            await inventarioPage.IrAlInventarioAsync();
+
+            await inventarioPage.AbrirEdicionMaterialAsync(
+                nombreMaterial
+            );
+
+            // Act
+            await inventarioPage.IntentarEditarMaterialConDatosInvalidosAsync();
+
+            // Assert
+            // La aplicación no debe permitir guardar los datos inválidos.
+            Assert.That(
+                Page.Url,
+                Does.Contain("/Inventario/Edit/"),
+                "El sistema permitió guardar un material con datos inválidos."
+            );
+
+            // El formulario de edición debe continuar visible.
+            await Assertions.Expect(
+                Page.Locator("#NombreMaterial")
+            ).ToBeVisibleAsync();
+
+            await Assertions.Expect(
+                Page.GetByRole(
+                    AriaRole.Button,
+                    new() { Name = "Guardar Cambios" }
+                )
+            ).ToBeVisibleAsync();
+        }
+
+
     }
 }

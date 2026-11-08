@@ -218,4 +218,74 @@ public class AuthenticationTests : TestBase
         await passwordRecoveryPage.VerificarConfirmacionAsync();
     }
 
+    [Test]
+    public async Task TC_NEG_001_Login_CredencialesInvalidas()
+    {
+        var loginPage = new LoginPage(Page);
+
+        // Arrange
+        await loginPage.NavigateAsync();
+
+        const string correo = "admin@winmovers.com";
+        const string contrasenaIncorrecta = "ContraseñaIncorrecta123!";
+
+        // Act
+        await loginPage.IniciarSesionIncorrectoAsync(
+            correo,
+            contrasenaIncorrecta
+        );
+
+        // Assert
+        // El usuario no debe ser autenticado.
+        Assert.That(
+            Page.Url,
+            Does.Contain("/Account/Login"),
+            "El usuario fue redirigido fuera del login utilizando credenciales inválidas."
+        );
+
+        // Comprobar que el formulario de login continúa visible.
+        await Assertions.Expect(
+            Page.GetByRole(
+                AriaRole.Heading,
+                new() { Name = "Iniciar sesión" }
+            )
+        ).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task TC_NEG_002_Login_CamposObligatoriosVacios()
+    {
+        var loginPage = new LoginPage(Page);
+
+        // Arrange
+        await loginPage.NavigateAsync();
+
+        // Act
+        await Page.GetByLabel("Correo").FillAsync("");
+        await Page.GetByLabel("Contraseña").FillAsync("");
+
+        await Page.GetByRole(
+            AriaRole.Button,
+            new() { Name = "Iniciar sesión" }
+        ).ClickAsync();
+
+        // Assert
+        // El usuario no debe poder autenticarse.
+        Assert.That(
+            Page.Url,
+            Does.Contain("/Account/Login"),
+            "El formulario permitió continuar sin completar los campos obligatorios."
+        );
+
+        // Deben permanecer visibles los campos del formulario.
+        await Assertions.Expect(
+           Page.GetByLabel("Correo")
+        ).ToBeVisibleAsync();
+
+        await Assertions.Expect(
+           Page.GetByLabel("Contraseña")
+        ).ToBeVisibleAsync();
+    }
+
+
 }

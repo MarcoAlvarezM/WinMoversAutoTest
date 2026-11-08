@@ -363,4 +363,20 @@ public class OrdenesPage
 
         return numeroOT;
     }
+
+    public async Task<bool> ExisteMensajeExitoAsync()
+    {
+        var mensaje = _page.Locator("#toastMsg");
+
+        // Si no existe el mensaje, no hubo confirmación de éxito.
+        if (await mensaje.CountAsync() == 0)
+            return false;
+
+        if (!await mensaje.IsVisibleAsync())
+            return false;
+
+        string texto = (await mensaje.InnerTextAsync()).Trim();
+
+        return texto.Contains("Material asignado correctamente.");
+    }
 }

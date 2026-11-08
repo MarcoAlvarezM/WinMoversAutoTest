@@ -210,4 +210,74 @@ public class OrdenesTests : TestBase
 
         return numeroOT;
     }
+
+    [Test]
+    public async Task TC_NEG_006_AsignarMaterial_CantidadSuperiorAlInventario()
+    {
+
+        await IniciarSesionAsync();
+
+        var ordenesPage = new OrdenesPage(Page);
+
+        var inventarioPage = new InventarioPage(Page);
+
+        // Arrange
+        const int stockInicial = 5;
+        const int cantidadAAsignar = 10;
+
+        string nombreMaterial =
+            $"Material NEG 006 {DateTime.Now:yyyyMMddHHmmss}";
+
+        // Crear material con inventario limitado.
+        await inventarioPage.IrAlInventarioAsync();
+        await inventarioPage.AbrirNuevoMaterialAsync();
+
+        await inventarioPage.RegistrarMaterialAsync(
+            nombreMaterial,
+            "Embalaje",
+            "Material para prueba negativa",
+            "Unidad",
+            stockInicial,
+            1
+        );
+
+        // Buscar una orden de trabajo que permita asignar materiales.
+        await ordenesPage.IrAOrdenesAsync();
+        await ordenesPage.AbrirPrimeraOrdenDisponibleAsync();
+
+        // Act
+        await ordenesPage.AsignarMaterialAsync(
+            nombreMaterial,
+            cantidadAAsignar
+        );
+
+        // Assert
+        // La cantidad solicitada supera el inventario disponible,
+        // por lo que el sistema no debería permitir la asignación.
+        Assert.That(
+            Page.Url,
+            Does.Contain("/OrdenTrabajo/Materiales/"),
+            "La operación de asignación no permaneció en el flujo esperado."
+        );
+
+        // El mensaje de éxito NO debe aparecer.
+        Assert.That(
+            await ordenesPage.ExisteMensajeExitoAsync(),
+            Is.False,
+            "El sistema permitió asignar una cantidad superior al inventario disponible."
+        );
+
+        // El stock del material debe conservarse.
+        await inventarioPage.IrAlInventarioAsync();
+
+        int stockFinal =
+            await inventarioPage.ObtenerExistenciasMaterialAsync(nombreMaterial);
+
+        Assert.That(
+            stockFinal,
+            Is.EqualTo(stockInicial),
+            "El inventario fue reducido aunque la cantidad asignada superaba el stock disponible."
+        );
+    }
+
 }

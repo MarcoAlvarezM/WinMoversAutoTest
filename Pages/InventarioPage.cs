@@ -155,6 +155,44 @@ namespace WinMoversAutoTest.Pages
             );
         }
 
+        public async Task IntentarRegistrarMaterialVacioAsync()
+        {
+            await _page.Locator("#NombreMaterial").FillAsync("");
+
+            // Seleccionar la opción vacía de categoría.
+            await _page.Locator("#Categoria").SelectOptionAsync("");
+
+            await _page.Locator("#Descripcion").FillAsync("");
+            await _page.Locator("#Unidad").FillAsync("");
+            await _page.Locator("#Existencias").FillAsync("");
+            await _page.Locator("#StockMinimo").FillAsync("");
+
+            await _page.GetByRole(
+                AriaRole.Button,
+                new() { Name = "Guardar" }
+            ).ClickAsync();
+        }
+
+        public async Task IntentarEditarMaterialConDatosInvalidosAsync()
+        {
+            await _page.Locator("#NombreMaterial").FillAsync("");
+
+            await _page.Locator("#Categoria").SelectOptionAsync("");
+
+            await _page.Locator("#Descripcion").FillAsync("");
+
+            await _page.Locator("#Unidad").FillAsync("");
+
+            await _page.Locator("#Existencias").FillAsync("-1");
+
+            await _page.Locator("#StockMinimo").FillAsync("-1");
+
+            await _page.GetByRole(
+                AriaRole.Button,
+                new() { Name = "Guardar Cambios" }
+            ).ClickAsync();
+        }
+
 
     }
 }
