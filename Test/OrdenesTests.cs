@@ -251,6 +251,11 @@ public class OrdenesTests : TestBase
             cantidadAAsignar
         );
 
+        // El sistema debe rechazar la asignación con un mensaje de error.
+        await Assertions.Expect(
+            Page.GetByText($"Stock insuficiente. Disponible: {stockInicial}")
+        ).ToBeVisibleAsync();
+
         // Assert
         // La cantidad solicitada supera el inventario disponible,
         // por lo que el sistema no debería permitir la asignación.
@@ -258,13 +263,6 @@ public class OrdenesTests : TestBase
             Page.Url,
             Does.Contain("/OrdenTrabajo/Materiales/"),
             "La operación de asignación no permaneció en el flujo esperado."
-        );
-
-        // El mensaje de éxito NO debe aparecer.
-        Assert.That(
-            await ordenesPage.ExisteMensajeExitoAsync(),
-            Is.False,
-            "El sistema permitió asignar una cantidad superior al inventario disponible."
         );
 
         // El stock del material debe conservarse.

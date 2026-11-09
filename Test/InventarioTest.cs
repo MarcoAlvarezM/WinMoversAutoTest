@@ -393,6 +393,11 @@ namespace WinMoversAutoTest.Tests
             // Act: intentar registrar un material sin información
             await inventarioPage.IntentarRegistrarMaterialVacioAsync();
 
+            // Verificar que existan errores de validación
+            await Assertions.Expect(
+                Page.Locator(".field-validation-error, .validation-summary-errors")
+            ).ToBeVisibleAsync();
+
             // Assert: el sistema debe permanecer en el formulario
             Assert.That(
                 new Uri(Page.Url).AbsolutePath,
@@ -415,11 +420,6 @@ namespace WinMoversAutoTest.Tests
 
             await Assertions.Expect(
                 Page.Locator("#Unidad")
-            ).ToBeVisibleAsync();
-
-            // Verificar que existan errores de validación
-            await Assertions.Expect(
-                Page.Locator(".field-validation-error, .validation-summary-errors")
             ).ToBeVisibleAsync();
         }
 
@@ -471,6 +471,10 @@ namespace WinMoversAutoTest.Tests
 
             // Assert
             // La aplicación no debe permitir guardar los datos inválidos.
+            await Assertions.Expect(
+                Page.Locator(".field-validation-error, .validation-summary-errors").First
+            ).ToBeVisibleAsync();
+
             Assert.That(
                 Page.Url,
                 Does.Contain("/Inventario/Edit/"),

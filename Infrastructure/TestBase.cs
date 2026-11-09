@@ -13,7 +13,6 @@ public abstract class TestBase
     protected IBrowserContext Context = null!;
     protected IPage Page = null!;
 
-    //protected const string BaseUrl = "http://3.15.121.133/";
     protected static string BaseUrl => TestConfig.BaseUrl;
 
     [SetUp]

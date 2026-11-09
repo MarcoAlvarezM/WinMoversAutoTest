@@ -235,6 +235,11 @@ public class AuthenticationTests : TestBase
             contrasenaIncorrecta
         );
 
+        // El sistema debe rechazar el acceso con el mensaje de credenciales incorrectas.
+        await Assertions.Expect(
+            Page.GetByText("Correo o contraseña incorrectos.")
+        ).ToBeVisibleAsync();
+
         // Assert
         // El usuario no debe ser autenticado.
         Assert.That(
@@ -268,6 +273,15 @@ public class AuthenticationTests : TestBase
             AriaRole.Button,
             new() { Name = "Iniciar sesión" }
         ).ClickAsync();
+
+        // El sistema debe mostrar la validación de cada campo obligatorio.
+        await Assertions.Expect(
+            Page.GetByText("El correo es requerido")
+        ).ToBeVisibleAsync();
+
+        await Assertions.Expect(
+            Page.GetByText("La contraseña es requerida")
+        ).ToBeVisibleAsync();
 
         // Assert
         // El usuario no debe poder autenticarse.
