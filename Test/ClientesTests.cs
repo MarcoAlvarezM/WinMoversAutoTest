@@ -433,30 +433,18 @@ public class ClientesTests : TestBase
         //    mudanzas
         // =====================================================
 
-        var filas = Page.Locator(
-            "table.data-table tbody tr");
+        var enlacesDetalle = Page.GetByRole(
+    AriaRole.Link,
+    new() { Name = "Ver detalle" });
 
-        int cantidadFilas = await filas.CountAsync();
-
-        if (cantidadFilas > 0)
+        if (await enlacesDetalle.CountAsync() > 0)
         {
-            var primeraFila = filas.First;
-
-            await Assertions.Expect(
-                primeraFila.GetByRole(
-                    AriaRole.Link,
-                    new()
-                    {
-                        Name = "Ver detalle"
-                    })
-            ).ToBeVisibleAsync();
+            await Assertions.Expect(enlacesDetalle.First).ToBeVisibleAsync();
         }
         else
         {
             await Assertions.Expect(
-                Page.GetByText(
-                    "Este cliente aún no posee mudanzas registradas."
-                )
+                Page.GetByText("Este cliente aún no posee mudanzas registradas.")
             ).ToBeVisibleAsync();
         }
     }
